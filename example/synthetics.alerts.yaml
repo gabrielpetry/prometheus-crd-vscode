@@ -1,0 +1,55 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: thanos-central
+    role: recording
+  name: synthetics-blackbox-recordings
+  
+spec:
+  groups:
+  - name: Blackbox recording rules
+    rules:
+    - alert: WorkspaceReachabilityDegraded
+      for: 15m
+      labels:
+        severity: p2
+        cluster: "{{ $labels.target_cluster }}"
+        cluster_provider: "{{ $labels.target_provider }}"
+        component: blackbox/probes/{{ $labels.tier }}
+      annotations:
+        summary: "{{ $labels.target_cluster }} - {{ $labels.job }} can't be reached by {{ $value }}% of probes"
+        description: |
+          Blackbox endpoint {{ $labels.endpoint }} is not being reached by other clusters.
+        runbook: https://rocketchat.atlassian.net/wiki/spaces/RnD/pages/378273825/ProbeReachabilityDegraded
+        slo: WorkspaceUptime
+      expr: |
+        blackbox:probes_reachability{tier!="premium"} < 50
+
+    - alert: ProbeReachabilityDegraded
+      for: 5m
+      labels:
+        severity: p1
+        cluster: "{{ $labels.target_cluster }}"
+        cluster_provider: "{{ $labels.target_provider }}"
+        component: blackbox/probes/{{ $labels.tier }}
+      annotations:
+        summary: "{{ $labels.tier }} - {{ $labels.job }} can't be reached by {{ $value }}% of probes"
+        description: |
+          Blackbox endpoint {{ $labels.endpoint }} is not being reached by other clusters.
+      expr: |
+        blackbox:probes_reachability{tier!="premium"} < 90
+
+    - alert: ProbeReachabilityDegradedForPremium
+      for: 15m
+      labels:
+        severity: p1
+        cluster: "{{ $labels.target_cluster }}"
+        cluster_provider: "{{ $labels.target_provider }}"
+        component: blackbox/probes/{{ $labels.tier }}
+      annotations:
+        summary: "{{ $labels.tier }} - {{ $labels.job }} can't be reached by {{ $value }}% of probes"
+        description: |
+          Blackbox endpoint {{ $labels.endpoint }} is not being reached by other clusters.
+      expr: |
+        blackbox:probes_reachability{tier="premium"} < 90

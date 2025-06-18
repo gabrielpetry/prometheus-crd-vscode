@@ -1,0 +1,35 @@
+{
+  "name": "prometheus-crd-vscode",
+  "displayName": "Prometheus CRD",
+  "description": "Syntax highlighting for Prometheus CRD files (.alerts.yaml and .recordings.yaml)",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "prometheus-crd",
+        "aliases": [
+          "Prometheus CRD",
+          "prometheus-crd"
+        ],
+        "extensions": [
+          ".alerts.yaml",
+          ".recordings.yaml"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "prometheus-crd",
+        "scopeName": "source.prometheus-crd",
+        "path": "./syntaxes/prometheus-crd.tmLanguage.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Prometheus CRD",
+	"scopeName": "source.prometheus-crd",
+	"fileTypes": [
+		"alerts.yaml",
+		"recordings.yaml"
+	],
+	"patterns": [
+		{
+			"include": "#yaml-comments"
+		},
+		{
+			"include": "#prometheus-expr"
+		},
+		{
+			"include": "#yaml-key"
+		},
+		{
+			"include": "#yaml-value"
+		},
+		{
+			"include": "#prometheus-rule-name"
+		},
+		{
+			"include": "#prometheus-group-name"
+		}
+	],
+	"repository": {
+		"yaml-comments": {
+			"name": "comment.line.number-sign.yaml",
+			"match": "#.*$"
+		},
+		"yaml-key": {
+			"name": "entity.name.tag.yaml",
+			"match": "^\\s*([a-zA-Z0-9_-]+):\\s*"
+		},
+		"yaml-value": {
+			"name": "string.unquoted.yaml",
+			"match": "^\\s*[a-zA-Z0-9_-]+:\\s*(.+)$"
+		},
+		"prometheus-group-name": {
+			"patterns": [
+				{
+					"name": "entity.name.function.prometheus",
+					"match": "^\\s*-\\s*name:\\s*([a-zA-Z0-9_\\s]+)$"
+				}
+			]
+		},
+		"prometheus-rule-name": {
+			"patterns": [
+				{
+					"name": "entity.name.function.prometheus",
+					"match": "^\\s*-\\s*(?:record|alert):\\s*([a-zA-Z0-9_:]+)"
+				},
+				{
+					"name": "entity.name.function.prometheus",
+					"match": "^\\s*-\\s*([a-zA-Z0-9_:]+)$"
+				}
+			]
+		},
+		"prometheus-expr": {
+			"begin": "^(\\s*)expr:\\s*(\\||\\|-|>|>-|\"|')\\s*$",
+			"beginCaptures": {
+				"0": {
+					"name": "entity.name.tag.yaml"
+				}
+			},
+			"end": "^(?!\\1\\s)",
+			"contentName": "source.promql",
+			"patterns": [
+				{
+					"include": "#prometheus-metrics"
+				},
+				{
+					"include": "#prometheus-labels"
+				},
+				{
+					"include": "#prometheus-operators"
+				}
+			]
+		},
+		"prometheus-metrics": {
+			"name": "entity.name.function.prometheus",
+			"match": "(?:^|\\s)([a-zA-Z_:][a-zA-Z0-9_:]*)(?=\\s*\\{)"
+		},
+		"prometheus-labels": {
+			"name": "variable.parameter.prometheus",
+			"match": "(?<=\\{)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?==|=~|!=|!~)"
+		},
+		"prometheus-operators": {
+			"name": "keyword.operator.prometheus",
+			"match": "\\b(and|or|unless|on|ignoring|group_left|group_right|offset|by|without)\\b|[-+*/%^=!<>]|\\|\\||&&"
+		}
+	}
+}

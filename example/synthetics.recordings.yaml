@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: thanos-central
+    role: recording
+  name: synthetics-blackbox-recordings
+  
+spec:
+  groups:
+  - name: Blackbox recording rules
+    rules:
+      - record: blackbox:probes_reachability
+        # This recording rule calculates the reachability based on probes
+        # based on how much of the probes can reach each of the targets
+        expr: |
+          (
+            (1 - (
+              count by(job, workspace, region, tier, endpoint, workspace, target_provider, target_cluster) (
+                probe_http_status_code{tier!=""} != 200 or probe_duration_seconds{tier!=""} > 5
+              )
+            ) / count by(job, workspace, region, tier, endpoint, workspace, target_provider, target_cluster) (probe_http_status_code{tier!=""})) * 100
+          or
+            (
+              count by(job, workspace, region, tier, endpoint, workspace, target_provider, target_cluster) (
+                probe_http_status_code{tier!=""} == 200 or probe_duration_seconds{tier!=""} <= 5
+              )
+            ) / count by(job, workspace, region, tier, endpoint, workspace, target_provider, target_cluster) (probe_http_status_code{tier!=""}) * 100
+          )
