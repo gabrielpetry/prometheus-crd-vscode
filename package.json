@@ -2,6 +2,7 @@
   "name": "prometheus-crd-vscode",
   "displayName": "Prometheus CRD",
   "description": "Syntax highlighting for Prometheus CRD files (.alerts.yaml and .recordings.yaml)",
+  "repository": "https://github.com/gabrielpetry/prometheus-crd-vscode",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.101.0"
