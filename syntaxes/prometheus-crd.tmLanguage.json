@@ -90,7 +90,7 @@
 		},
 		"prometheus-operators": {
 			"name": "keyword.operator.prometheus",
-			"match": "\\b(and|or|unless|on|ignoring|group_left|group_right|offset|by|without)\\b|[-+*/%^=!<>]|\\|\\||&&"
+			"match": "\\b(and|or|unless|on|ignoring|group_left|group_right|offset|by|without|AND|OR|UNLESS|ON|IGNORING|GROUP_LEFT|GROUP_RIGHT|OFFSET|BY|WITHOUT)\\b|[-+*/%^=!<>]|\\|\\||&&"
 		}
 	}
 }
